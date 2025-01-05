@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Slice;
+//import org.springframework.data.domain.Page;
+//import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 
 @Getter
@@ -45,15 +45,15 @@ public class ApiResponse {
     }
 
     // 성공 - 페이지네이션에 대한 응답
-    public static ResponseEntity<ApiResponse> onSuccess(SuccessStatus status, Page<?> page) {
-        PageInfo pageInfo = new PageInfo(page.getNumber(), page.getSize(), page.hasNext());
-        return onSuccess(status, pageInfo, page.getContent());
-    }
-
-    public static ResponseEntity<ApiResponse> onSuccess(SuccessStatus status, Slice<?> page) {
-        PageInfo pageInfo = new PageInfo(page.getNumber(), page.getSize(), page.hasNext());
-        return onSuccess(status, pageInfo, page.getContent());
-    }
+//    public static ResponseEntity<ApiResponse> onSuccess(SuccessStatus status, Page<?> page) {
+//        PageInfo pageInfo = new PageInfo(page.getNumber(), page.getSize(), page.hasNext());
+//        return onSuccess(status, pageInfo, page.getContent());
+//    }
+//
+//    public static ResponseEntity<ApiResponse> onSuccess(SuccessStatus status, Slice<?> page) {
+//        PageInfo pageInfo = new PageInfo(page.getNumber(), page.getSize(), page.hasNext());
+//        return onSuccess(status, pageInfo, page.getContent());
+//    }
 
 
     // 실패한 경우 응답 생성
