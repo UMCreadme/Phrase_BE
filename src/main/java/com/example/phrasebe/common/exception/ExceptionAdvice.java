@@ -2,29 +2,26 @@ package com.example.phrasebe.common.exception;
 
 import com.example.phrasebe.common.response.ApiResponse;
 import com.example.phrasebe.common.status.ErrorStatus;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
-public class ExceptionAdvice extends ResponseEntityExceptionHandler {
+public class ExceptionAdvice {
     @ExceptionHandler
-    public ResponseEntity<Object> validation(ConstraintViolationException e, WebRequest request) {
+    public ResponseEntity<ApiResponse> validation(ConstraintViolationException e) {
         String errorMessage = e.getConstraintViolations().stream()
-                .map(constraintViolation -> constraintViolation.getMessage())
+                .map(ConstraintViolation::getMessage)
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("ConstraintViolationException 추출 도중 에러 발생"));
-
-        return handleExceptionInternalConstraint(e, ErrorStatus.valueOf(errorMessage), HttpHeaders.EMPTY, request);
+        return ApiResponse.onFailure(ErrorStatus.VALIDATION_ERROR, errorMessage);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -64,17 +61,5 @@ public class ExceptionAdvice extends ResponseEntityExceptionHandler {
         e.printStackTrace();
 
         return ApiResponse.onFailure(e.getErrorStatus(), e.getMessage());
-    }
-
-    private ResponseEntity<Object> handleExceptionInternalConstraint(Exception e, ErrorStatus errorCommonStatus,
-                                                                     HttpHeaders headers, WebRequest request) {
-        ResponseEntity<ApiResponse> body = ApiResponse.onFailure(errorCommonStatus);
-        return super.handleExceptionInternal(
-                e,
-                body,
-                headers,
-                errorCommonStatus.getHttpStatus(),
-                request
-        );
     }
 }
